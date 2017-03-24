@@ -8,9 +8,9 @@ Preferably freedesktop.org sound theme should be installed.
 
 ## Installation
 You may run (as root)
-'''Bash
+```Bash
 make install
-'''
+```
 
 By default makefile will install files to corresponding paths as shown below:
 
@@ -20,7 +20,9 @@ system-sounds.conf to /etc/skel
 
 Alternatively you may want to specify other paths then the defaults:
 
+```Bash
 make PREFIX=/usr/local SYSCONFDIR=/some-other-directory LIGHTDMDIR=/lightdm_directory install
+```
 
 Then Makefile installs:
 
@@ -44,5 +46,4 @@ directory. system-sounds-script uses freedesktop.org sound theme by default (if 
 
 ## Authors
 Atilla ÖNTAŞ <tarakbumba@gmail.com> 2017
-
 
