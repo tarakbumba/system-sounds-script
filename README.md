@@ -14,9 +14,9 @@ make install
 
 By default makefile will install files to corresponding paths as shown below:
 
-system-sounds-script to /usr/bin
-50-system-sounds.conf to /etc/lightdm/lightdm.conf/
-system-sounds.conf to /etc/skel
+* system-sounds-script to /usr/bin
+* 50-system-sounds.conf to /etc/lightdm/lightdm.conf/
+* system-sounds.conf to /etc/skel
 
 Alternatively you may want to specify other paths then the defaults:
 
@@ -26,9 +26,9 @@ make PREFIX=/usr/local SYSCONFDIR=/some-other-directory LIGHTDMDIR=/lightdm_dire
 
 Then Makefile installs:
 
-system-sounds-script to /usr/local/bin
-50-system-sounds.conf to /lightdm_directory
-system-sounds.conf to /some-other-directory/skel
+* system-sounds-script to /usr/local/bin
+* 50-system-sounds.conf to /lightdm_directory
+* system-sounds.conf to /some-other-directory/skel
 
 ## Usage
 system-sounds-script does not take argument to its options.
