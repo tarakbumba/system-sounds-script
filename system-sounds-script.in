@@ -1,0 +1,105 @@
+#! /bin/bash
+
+app_version="@VERSION@"
+
+LOCAL_SOUNDS="$HOME/.config/system-sounds.conf"
+default_login_sound="/usr/share/sounds/freedesktop/stereo/service-login.oga"
+default_logout_sound="/usr/share/sounds/freedesktop/stereo/service-logout.oga"
+default_system_ready="/usr/share/sounds/freedesktop/stereo/complete.oga"
+
+if [[ -f ${LOCAL_SOUNDS} ]]; then source ${LOCAL_SOUNDS}; fi
+
+login_sound=${user_login_sound:=$default_login_sound}
+logout_sound=${user_logout_sound:=$default_logout_sound}
+system_ready=${user_desktop_ready_sound:=$default_system_ready}
+
+ALL_OFF="\e[0m"
+BOLD="\e[1m"
+RED="${BOLD}\e[31m"
+
+####################################################################################################################################################
+plain () {
+# Function to display localized plain messages
+####################################################################################################################################################
+	local mesg=$1; shift
+	printf "${BOLD}    ${mesg}${ALL_OFF}\n" "$@" >&2
+}
+
+####################################################################################################################################################
+error () {
+# Function to display localized and colorized error messages
+####################################################################################################################################################
+	local mesg=$1; shift
+	printf "${RED}==> $(gettext "ERROR :: ")${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}\n" "$@" >&2
+}
+
+usage(){
+echo ""
+plain "$(gettext "  system-sounds-script - version %s")" "${app_version}"
+echo ""
+echo "***************************************************************"
+plain "$(gettext "  A simple script to set and use system/event sounds on MATE Desktop and LightDM")"
+echo "***************************************************************"
+plain "$(gettext "Usage: system-sounds [options]")"
+echo ""
+plain "$(gettext " -l        - Desktop login sound from configuration file")"
+plain "$(gettext " -o        - Desktop logout sound from configuration file")"
+plain "$(gettext " -r        - System ready sound from configuration file")"
+plain "$(gettext " -h        - Displays this brief usage")"
+plain "$(gettext " 
+This script takes no arguments. Please define your preferred sounds in
+your ~/.config/system-sounds.conf file. An example configuration file 
+should provided along with this script and should be in your /etc/skel
+directory.
+")"
+}
+
+
+# check if canberra-gtk-play is installed
+if [ -z $(which canberra-gtk-play) ]; then
+    error "$(gettext "canberra-gtk-play not found. This script depends on it!")" && exit 1
+fi
+
+passed_options=0
+while getopts "logh" OPTION ; do
+    passed_options=1
+	case ${OPTION} in
+		l)
+            sleep 1 && canberra-gtk-play -f ${login_sound} &            
+		    ;;
+
+        o)
+            canberra-gtk-play -f ${logout_sound}
+            ;;
+
+        g)
+            # We must sleep before play sound, because upon session login with
+            # lightdm canberra-gtk-play can not be activated.
+            sleep 1 && canberra-gtk-play -f ${system_ready} &             
+            ;;
+
+        h)
+            usage            
+            ;;
+            	    
+		\? )
+		    error "$(gettext "Unrecognized option: %s ")" "'-${OPTARG}'" >&2
+		    exit 1
+		    ;;
+		:)
+		    error "$(gettext "Missing option argument for %s")" "-${OPTARG}" >&2
+		    exit 1
+		    ;;
+		*)
+		    error "$(gettext "Unrecognized option: %s. Did you try to set option without '-' prefixed?")" "'${OPTARG}'" >&2
+		    exit 1
+		    ;;
+	esac
+done
+
+shift $((OPTIND-1))
+
+if ((!passed_options)); then
+  error "$(gettext "System sounds script needs an option to run but none given. Displaying brief usage for available options:")"
+  usage && exit 1
+fi
