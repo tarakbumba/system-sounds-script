@@ -1,11 +1,13 @@
 VERSION = 0.1.0
 PN = system-sounds-script
 DM = 50-system-sounds.conf
+DS = system-sounds-script.desktop
 
 PREFIX ?= /usr
 SYSCONFDIR ?= /etc
 LIGHTDMDIR ?= $(SYSCONFDIR)/lightdm/lightdm.conf.d
 BINDIR = $(PREFIX)/bin
+AUTOSTARTDIR=$(SYSCONFDIR)/xdg/autostart
 
 RM = rm
 SED = sed
@@ -29,13 +31,16 @@ install: $(PN) $(DM)
 	$(INSTALL_DIR) "$(DESTDIR)$(BINDIR)"
 	$(INSTALL_DIR) "$(DESTDIR)$(LIGHTDMDIR)"
 	$(INSTALL_DIR) "$(DESTDIR)$(SYSCONFDIR)/skel"
+	$(INSTALL_DIR) "$(DESTDIR)$(AUTOSTARTDIR)"
 	$(INSTALL_PROGRAM) $(PN) "$(DESTDIR)$(BINDIR)/$(PN)"
 	$(INSTALL_DATA) $(DM) "$(DESTDIR)$(LIGHTDMDIR)/"
+	$(INSTALL_DATA) $(DS).in "$(DESTDIR)$(AUTOSTARTDIR)/$(DS)"
 	$(INSTALL_DATA) system-sounds.conf "$(DESTDIR)$(SYSCONFDIR)/skel/"
 
 uninstall:
 	$(RM) "$(DESTDIR)$(BINDIR)/$(PN)"
 	$(RM) "$(DESTDIR)$(LIGHTDMDIR)/$(DM)"
+	$(RM) "$(DESTDIR)$(AUTOSTARTDIR)/$(DS)"
 	$(RM) "$(DESTDIR)$(SYSCONFDIR)/skel/system-sounds.conf"
 
 clean:

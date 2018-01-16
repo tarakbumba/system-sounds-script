@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=System Login Sound Script
+Comment=Plays a sound file upon login
+Icon=multimedia-volume-control-symbolic
+Exec=system-sounds-script -l &
+Terminal=false
+Type=Application
+NotShowIn=GNOME;
+
